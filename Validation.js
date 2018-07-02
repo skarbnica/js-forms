@@ -12,16 +12,18 @@ function Validation() {
 
     /**
      * Сообщения об разничных типах ошибок
-     * @memberOf Validation
      *
-     * @param {string} emptyText - Пустое текстовое поле.
-     * @param {string} emptyEmail - Пустое поле ввода email.
-     * @param {string} emptyTel - Пустое поле ввода телефонного номера.
-     * @param {string} shortText - Короткое содержимое текстового поля.
-     * @param {string} shortEmail - Короткое содержимое поля ввода email.
-     * @param {string} invalidEmail - Некорректное содержимое поля ввода email.
-     * @param {string} invalidText - Некорректное содержимое текстового поля.
-     * @param {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
+     * @type {object}
+     *
+     * @property {string} emptyText
+     * @property {string} emptyText - Пустое текстовое поле.
+     * @property {string} emptyEmail - Пустое поле ввода email.
+     * @property {string} emptyTel - Пустое поле ввода телефонного номера.
+     * @property {string} shortText - Короткое содержимое текстового поля.
+     * @property {string} shortEmail - Короткое содержимое поля ввода email.
+     * @property {string} invalidEmail - Некорректное содержимое поля ввода email.
+     * @property {string} invalidText - Некорректное содержимое текстового поля.
+     * @property {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
      */
     this.errors = {
         'emptyText': 'пустой текст',
@@ -36,12 +38,12 @@ function Validation() {
 
     /**
      * Определенные селекторы формы.
-     * @memberOf Validation
+     * @type {object}
      *
-     * @param {string} rowInput - Родительский блок єлемента формы.
-     * @param {string} errorText - Блок для размещения сообщения об ошибке.
-     * @param {string} errorBlock - Класс стилизации ошибки элемента формы.
-     * @param {string} forms - Формы к которым будет применяться валидация.
+     * @property {string} rowInput - Родительский блок єлемента формы.
+     * @property {string} errorText - Блок для размещения сообщения об ошибке.
+     * @property {string} errorBlock - Класс стилизации ошибки элемента формы.
+     * @property {string} forms - Формы к которым будет применяться валидация.
      */
     this.selectors = {
         'rowBlock': '.row-input',
@@ -61,7 +63,6 @@ function Validation() {
     /**
      * Добавляет сообщение об ошибке.
      *
-     * @memberOf Validation
      * @param {object} target - Элемент для размещения ошибки.
      * @param {string} errorMessage - Сообщение об ошибке.
      */
@@ -75,10 +76,9 @@ function Validation() {
     };
 
     /**
+     * @param target - Элемент в котором нужно удалить сообщение об ошибке.
      * Удаляет сообщение об ошибке.
      *
-     * @memberOf Validation
-     * @param target - Элемент в котором нужно удалить сообщение об ошибке.
      */
     this.removeError = function (target) {
         $(target).removeClass(this.selectors.errorBlock);
@@ -153,7 +153,6 @@ function Validation() {
 
     /**
      * Анимация к текстам ошибок при submit
-     * @memberOf Validation
      *
      * @param target - Поле с текстом ошибки, к которой будет применена анимация.
      */
@@ -176,7 +175,6 @@ function Validation() {
 
     /**
      * Проверяет валидность поля для вводу текстовой информации.
-     * @memberOf Validation
      *
      * @param {object} target - Поле которое проверяется на валидность.
      */
@@ -192,7 +190,6 @@ function Validation() {
 
     /**
      * Проверяет валидность поля для ввода электронного адреса.
-     * @memberOf Validation
      *
      * @param {object} target - Поле которое проверяется на валидность.
      */
@@ -208,7 +205,6 @@ function Validation() {
 
     /**
      * Проверяет валидность поля для ввода телефонного номера.
-     * @memberOf Validation
      *
      * @param {object} target - Поле которое проверяется на валидость.
      */
