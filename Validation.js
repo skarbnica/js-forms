@@ -1,49 +1,104 @@
-
-/*errors = {
-    'emptyText': 'пустой текст',
-    'emptyEmail': 'пустой емаил',
-    'emptyTel': 'пустой емаил',
-    'shortText': 'короткий текст',
-    'shortEmail': 'короткий емаил',
-    'invalidEmail': 'невалидный емаил',
-    'invalidText': 'невалидный текст',
-    'InvalidTel': 'невалидный номер телефона'
-};
-
-selectors = {
-    'rowInput': '.row-input',
-    'errorBlock': '.form__error',
-    'errorInput': 'error__field',
-    'forms': '.contacts-page__form form'
-
-};*/
+/**
+ *
+ * @constructor
+ * @name Validation
+ *
+ * Для валидации форм необходимо задать определенные селекторы элементов формы, соответствующие сообщения об ошибках и
+ * вызвать объект валидации через new Validation().
+ */
 
 function Validation() {
     var self = this;
 
-    if ($(selectors.forms).attr('novalidate') === undefined) {
-        $(selectors.forms).attr('novalidate', true);
+    /**
+     * Сообщения об разничных типах ошибок
+     * @memberOf Validation
+     *
+     * @param {string} emptyText - Пустое текстовое поле.
+     * @param {string} emptyEmail - Пустое поле ввода email.
+     * @param {string} emptyTel - Пустое поле ввода телефонного номера.
+     * @param {string} shortText - Короткое содержимое текстового поля.
+     * @param {string} shortEmail - Короткое содержимое поля ввода email.
+     * @param {string} invalidEmail - Некорректное содержимое поля ввода email.
+     * @param {string} invalidText - Некорректное содержимое текстового поля.
+     * @param {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
+     */
+    this.errors = {
+        'emptyText': 'пустой текст',
+        'emptyEmail': 'пустой емаил',
+        'emptyTel': 'пустой емаил',
+        'shortText': 'короткий текст',
+        'shortEmail': 'короткий емаил',
+        'invalidEmail': 'невалидный емаил',
+        'invalidText': 'невалидный текст',
+        'InvalidTel': 'невалидный номер телефона'
+    };
+
+    /**
+     * Определенные селекторы формы.
+     * @memberOf Validation
+     *
+     * @param {string} rowInput - Родительский блок єлемента формы.
+     * @param {string} errorText - Блок для размещения сообщения об ошибке.
+     * @param {string} errorBlock - Класс стилизации ошибки элемента формы.
+     * @param {string} forms - Формы к которым будет применяться валидация.
+     */
+    this.selectors = {
+        'rowBlock': '.row-input',
+        'errorText': '.form__error',
+        'errorBlock': 'error__field',
+        'forms': '.contacts-page__form form'
+    };
+
+    /**
+     *
+     * Проверка формы на наличие аттрибута novalidate.
+     */
+    if ($(this.selectors.forms).attr('novalidate') === undefined) {
+        $(this.selectors.forms).attr('novalidate', true);
     }
 
+    /**
+     * Добавляет сообщение об ошибке.
+     *
+     * @memberOf Validation
+     * @param {object} target - Элемент для размещения ошибки.
+     * @param {string} errorMessage - Сообщение об ошибке.
+     */
     this.addError = function (target, errorMessage) {
-        if (errors[errorMessage]) {
-            $(target).closest(selectors.rowInput).find(selectors.errorBlock).text(errors[errorMessage]);
+        if (this.errors[errorMessage]) {
+            $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(this.errors[errorMessage]);
         } else {
-            $(target).closest(selectors.rowInput).find(selectors.errorBlock).text(errorMessage);
+            $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
         }
-        $(target).addClass(selectors.errorInput);
+        $(target).addClass(this.selectors.errorBlock);
     };
 
+    /**
+     * Удаляет сообщение об ошибке.
+     *
+     * @memberOf Validation
+     * @param target - Элемент в котором нужно удалить сообщение об ошибке.
+     */
     this.removeError = function (target) {
-        $(target).removeClass(selectors.errorInput);
-        $(target).closest(selectors.rowInput).find(selectors.errorBlock).text('');
+        $(target).removeClass(this.selectors.errorBlock);
+        $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
     };
 
-    $('input,textarea').on('focus', function () {
+    /**
+     *
+     *  Убирает ошибки в поле при фокусе на нем.
+     */
+    $(this.selectors.forms).find('input,textarea').on('focus', function () {
         self.removeError(this);
     });
 
-    $(selectors.forms).on('submit', function () {
+
+    /**
+     *
+     * Проверка валидности элементов формы при submit
+     */
+    $(this.selectors.forms).on('submit', function () {
         var form = $(this),
             formInvalid = true;
         form.find('input,textarea').not('input[type=hidden]').each(function () {
@@ -54,16 +109,16 @@ function Validation() {
                     var type = $(this).attr('type')
                 }
                 if (type === 'text') {
-                    self.valid_text(this);
+                    self.validText(this);
                 } else if (type === 'email') {
-                    self.valid_email(this);
+                    self.validEmail(this);
                 } else if (type === 'tel') {
-                    self.valid_tel(this);
+                    self.validTel(this);
                 }
                 formInvalid = false;
                 $(this).blur();
             }
-            if ($(this).hasClass(selectors.errorInput)) {
+            if ($(this).hasClass(self.selectors.errorBlock)) {
                 formInvalid = false;
                 self.triggError(this);
             }
@@ -75,7 +130,11 @@ function Validation() {
         return false
     });
 
-    $('input, textarea').on('blur', function () {
+    /**
+     *
+     *  Проверка на валидность определенного поля при уходе из него фокуса.
+     */
+    $(this.selectors.forms).find('input, textarea').on('blur', function () {
         if ($(this).is('textarea')) {
             var type = 'text'
         } else if ($(this).is('input')) {
@@ -83,17 +142,23 @@ function Validation() {
         }
         if (type !== 'submit') {
             if (type === 'text') {
-                self.valid_text(this);
+                self.validText(this);
             } else if (type === 'email') {
-                self.valid_email(this);
+                self.validEmail(this);
             } else if (type === 'tel') {
-                self.valid_tel(this);
+                self.validTel(this);
             }
         }
     });
 
+    /**
+     * Анимация к текстам ошибок при submit
+     * @memberOf Validation
+     *
+     * @param target - Поле с текстом ошибки, к которой будет применена анимация.
+     */
     this.triggError = function (target) {
-        var errorBox = $(target).closest(selectors.rowInput).find(selectors.errorBlock),
+        var errorBox = $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText),
             trigger = false;
         var triggeredErrors = setInterval(function () {
             if (trigger === false) {
@@ -109,7 +174,13 @@ function Validation() {
         }, 525);
     };
 
-    this.valid_text = function (target) {
+    /**
+     * Проверяет валидность поля для вводу текстовой информации.
+     * @memberOf Validation
+     *
+     * @param {object} target - Поле которое проверяется на валидность.
+     */
+    this.validText = function (target) {
         if (target.validity.valueMissing) {
             self.addError(target, 'emptyText');
         } else if (target.validity.tooShort) {
@@ -119,7 +190,13 @@ function Validation() {
         }
     };
 
-    this.valid_email = function (target) {
+    /**
+     * Проверяет валидность поля для ввода электронного адреса.
+     * @memberOf Validation
+     *
+     * @param {object} target - Поле которое проверяется на валидность.
+     */
+    this.validEmail = function (target) {
         if (target.validity.valueMissing) {
             self.addError(target, 'emptyEmail');
         } else if (target.validity.tooShort) {
@@ -129,7 +206,13 @@ function Validation() {
         }
     };
 
-    this.valid_tel = function (target) {
+    /**
+     * Проверяет валидность поля для ввода телефонного номера.
+     * @memberOf Validation
+     *
+     * @param {object} target - Поле которое проверяется на валидость.
+     */
+    this.validTel = function (target) {
         if (target.validity.valueMissing) {
             self.addError(target, 'emptyTel')
         } else if (target.validity.patternMismatch) {
