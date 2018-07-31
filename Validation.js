@@ -45,11 +45,22 @@ function Validation() {
      * @property {string} errorBlock - Класс стилизации ошибки элемента формы.
      * @property {string} forms - Формы к которым будет применяться валидация.
      */
+
     this.selectors = {
-        'rowBlock': '.row-input',
+        'rowBlock': '.b-input',
         'errorText': '.form__error',
-        'errorBlock': 'error__field',
-        'forms': '.contacts-page__form form'
+        'forms': 'form'
+    };
+
+    /**
+     * Определенные параметры формы.
+     * @type {object}
+     *
+     * @property {string} errorClass - Класс для стилизации поля при ошибке.
+     */
+
+    this.options = {
+        'errorClass': 'error__field'
     };
 
     /**
@@ -72,7 +83,7 @@ function Validation() {
         } else {
             $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
         }
-        $(target).addClass(this.selectors.errorBlock);
+        $(target).addClass(this.options.errorClass);
     };
 
     /**
@@ -81,7 +92,7 @@ function Validation() {
      *
      */
     this.removeError = function (target) {
-        $(target).removeClass(this.selectors.errorBlock);
+        $(target).removeClass(this.options.errorClass);
         $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
     };
 
