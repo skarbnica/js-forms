@@ -15,7 +15,6 @@ function Validation() {
      *
      * @type {object}
      *
-     * @property {string} emptyText
      * @property {string} emptyText - Пустое текстовое поле.
      * @property {string} emptyEmail - Пустое поле ввода email.
      * @property {string} emptyTel - Пустое поле ввода телефонного номера.
@@ -40,7 +39,7 @@ function Validation() {
      * Определенные селекторы формы.
      * @type {object}
      *
-     * @property {string} rowInput - Родительский блок єлемента формы.
+     * @property {string} rowInput - Родительский блок элемента формы.
      * @property {string} errorText - Блок для размещения сообщения об ошибке.
      * @property {string} errorBlock - Класс стилизации ошибки элемента формы.
      * @property {string} forms - Формы к которым будет применяться валидация.
@@ -83,7 +82,9 @@ function Validation() {
         } else {
             $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
         }
-        $(target).addClass(this.options.errorClass);
+        if (this.options.errorClass !== undefined) {
+            $(target).addClass(this.options.errorClass);
+        }
     };
 
     /**
@@ -92,7 +93,9 @@ function Validation() {
      *
      */
     this.removeError = function (target) {
-        $(target).removeClass(this.options.errorClass);
+        if (this.options.errorClass !== undefined) {
+            $(target).removeClass(this.options.errorClass);
+        }
         $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
     };
 
