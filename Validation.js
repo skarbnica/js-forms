@@ -49,16 +49,11 @@ function Validation() {
         'rowBlock': '.row-input',
         'errorText': '.form__error',
         'errorBlock': 'error__field',
+        'wereErrorClass' : '.row-input',
         'forms': '.contacts-page__form form'
     };
 
-    /**
-     *
-     * Проверка формы на наличие аттрибута novalidate.
-     */
-    if ($(this.selectors.forms).attr('novalidate') === undefined) {
-        $(this.selectors.forms).attr('novalidate', true);
-    }
+
 
     /**
      * Добавляет сообщение об ошибке.
@@ -72,7 +67,7 @@ function Validation() {
         } else {
             $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
         }
-        $(target).addClass(this.selectors.errorBlock);
+        $(target).closest(this.selectors.wereErrorClass).addClass(this.selectors.errorBlock);
     };
 
     /**
@@ -81,33 +76,76 @@ function Validation() {
      *
      */
     this.removeError = function (target) {
-        $(target).removeClass(this.selectors.errorBlock);
+        $(target).closest(this.selectors.wereErrorClass).removeClass(this.selectors.errorBlock);
         $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
     };
 
-    /**
-     *
-     *  Убирает ошибки в поле при фокусе на нем.
-     */
-    $(this.selectors.forms).find('input,textarea').on('focus', function () {
-        self.removeError(this);
-    });
+    this.addEvents = function () {
+
+        /**
+         *
+         * Проверка формы на наличие аттрибута novalidate.
+         */
+        if ($(this.selectors.forms).attr('novalidate') === undefined) {
+            $(this.selectors.forms).attr('novalidate', true);
+        }
+
+        /**
+         *
+         *  Убирает ошибки в поле при фокусе на нем.
+         */
+        $(this.selectors.forms).find('input,textarea').on('focus', function () {
+            self.removeError(this);
+        });
 
 
-    /**
-     *
-     * Проверка валидности элементов формы при submit
-     */
-    $(this.selectors.forms).on('submit', function () {
-        var form = $(this),
-            formInvalid = true;
-        form.find('input,textarea').not('input[type=hidden]').each(function () {
-            if (this.validity.valid === false) {
-                if ($(this).is('textarea')) {
-                    var type = 'text'
-                } else if ($(this).is('input')) {
-                    var type = $(this).attr('type')
+        /**
+         *
+         * Проверка валидности элементов формы при submit
+         */
+        $(this.selectors.forms).on('submit', function () {
+            var form = $(this),
+                formInvalid = true;
+            form.find('input,textarea').not('input[type=hidden]').each(function () {
+                if (this.validity.valid === false) {
+                    if ($(this).is('textarea')) {
+                        var type = 'text'
+                    } else if ($(this).is('input')) {
+                        var type = $(this).attr('type')
+                    }
+                    if (type === 'text') {
+                        self.validText(this);
+                    } else if (type === 'email') {
+                        self.validEmail(this);
+                    } else if (type === 'tel') {
+                        self.validTel(this);
+                    }
+                    formInvalid = false;
+                    $(this).blur();
                 }
+                if ($(this).closest(self.selectors.wereErrorClass).hasClass(self.selectors.errorBlock)) {
+                    formInvalid = false;
+                    self.triggError(this);
+                }
+            });
+            if (formInvalid === true) {
+                console.log('Validation is fine');
+                return true
+            }
+            return false
+        });
+
+        /**
+         *
+         *  Проверка на валидность определенного поля при уходе из него фокуса.
+         */
+        $(this.selectors.forms).find('input, textarea').on('blur', function () {
+            if ($(this).is('textarea')) {
+                var type = 'text'
+            } else if ($(this).is('input')) {
+                var type = $(this).attr('type')
+            }
+            if (type !== 'submit') {
                 if (type === 'text') {
                     self.validText(this);
                 } else if (type === 'email') {
@@ -115,41 +153,11 @@ function Validation() {
                 } else if (type === 'tel') {
                     self.validTel(this);
                 }
-                formInvalid = false;
-                $(this).blur();
-            }
-            if ($(this).hasClass(self.selectors.errorBlock)) {
-                formInvalid = false;
-                self.triggError(this);
             }
         });
-        if (formInvalid === true) {
-            console.log('Validation is fine');
-            return true
-        }
-        return false
-    });
+    };
 
-    /**
-     *
-     *  Проверка на валидность определенного поля при уходе из него фокуса.
-     */
-    $(this.selectors.forms).find('input, textarea').on('blur', function () {
-        if ($(this).is('textarea')) {
-            var type = 'text'
-        } else if ($(this).is('input')) {
-            var type = $(this).attr('type')
-        }
-        if (type !== 'submit') {
-            if (type === 'text') {
-                self.validText(this);
-            } else if (type === 'email') {
-                self.validEmail(this);
-            } else if (type === 'tel') {
-                self.validTel(this);
-            }
-        }
-    });
+
 
     /**
      * Анимация к текстам ошибок при submit
@@ -160,11 +168,12 @@ function Validation() {
         var errorBox = $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText),
             trigger = false;
         var triggeredErrors = setInterval(function () {
+            var right = errorBox.css('right');
             if (trigger === false) {
-                errorBox.css('right', '2px');
+                errorBox.css('right', +right.substring(0, right.search('p')) + 2 +'px');
                 trigger = true;
             } else {
-                errorBox.css('right', '0');
+                errorBox.css('right', +right.substring(0, right.search('p')) + (-2) + 'px');
                 trigger = false;
             }
         }, 85);
