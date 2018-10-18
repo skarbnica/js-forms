@@ -103,32 +103,15 @@ function Validation() {
          *
          * Проверка валидности элементов формы при submit
          */
-        $(this.selectors.forms).on('submit', function () {
+        $(this.selectors.forms).on('submit', function (e) {
             var form = $(this),
-                formInvalid = true;
+                formValid = true;
             form.find('input,textarea').not('input[type=hidden]').each(function () {
-                if (this.validity.valid === false) {
-                    if ($(this).is('textarea')) {
-                        var type = 'text'
-                    } else if ($(this).is('input')) {
-                        var type = $(this).attr('type')
-                    }
-                    if (type === 'text') {
-                        self.validText(this);
-                    } else if (type === 'email') {
-                        self.validEmail(this);
-                    } else if (type === 'tel') {
-                        self.validTel(this);
-                    }
-                    formInvalid = false;
-                    $(this).blur();
-                }
-                if ($(this).closest(self.selectors.wereErrorClass).hasClass(self.selectors.errorBlock)) {
-                    formInvalid = false;
-                    self.triggError(this);
-                }
+               if(self.validFormElements(this) === false){
+                   formValid = false;
+               }
             });
-            if (formInvalid === true) {
+            if (formValid === true) {
                 console.log('Validation is fine');
                 return true
             }
@@ -157,6 +140,35 @@ function Validation() {
         });
     };
 
+    /**
+     * Проверка на валидность элементов формы
+     *
+     * @param target - Элемент формы, который будет проверяться на валидность.
+     */
+    this.validFormElements = function (target) {
+        if (target.validity.valid === false) {
+            if ($(target).is('textarea')) {
+                var type = 'text'
+            } else if ($(target).is('input')) {
+                var type = $(target).attr('type')
+            }
+            if (type === 'text') {
+                self.validText(target);
+            } else if (type === 'email') {
+                self.validEmail(target);
+            } else if (type === 'tel') {
+                self.validTel(target);
+            }
+            formValid = false;
+            $(target).blur();
+        }
+        if ($(target).closest(self.selectors.wereErrorClass).hasClass(self.selectors.errorBlock)) {
+            formValid = false;
+            self.triggError(target);
+            return formValid;
+        }
+        return true;
+    };
 
 
     /**
