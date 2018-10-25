@@ -221,6 +221,8 @@ function Validation() {
             self.addError(target, 'shortEmail');
         } else if (target.validity.patternMismatch) {
             self.addError(target, 'invalidEmail')
+        } else if (target.validity.typeMismatch) {
+            self.addError(target, 'invalidEmail')
         }
     };
 
