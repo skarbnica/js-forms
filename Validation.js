@@ -15,24 +15,29 @@ function Validation() {
      *
      * @type {object}
      *
-     * @property {string} emptyText
      * @property {string} emptyText - Пустое текстовое поле.
      * @property {string} emptyEmail - Пустое поле ввода email.
      * @property {string} emptyTel - Пустое поле ввода телефонного номера.
+     * @property {string} emptyPassword - Пустое поле ввода пароля.
      * @property {string} shortText - Короткое содержимое текстового поля.
      * @property {string} shortEmail - Короткое содержимое поля ввода email.
+     * @property {string} shortPassword - Короткое содержимое поля ввода пароля.
      * @property {string} invalidEmail - Некорректное содержимое поля ввода email.
      * @property {string} invalidText - Некорректное содержимое текстового поля.
      * @property {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
+     * @property {string} InvalidPassword - Некорректное содержимое поля ввода пароля.
      */
     this.errors = {
         'emptyText': 'пустой текст',
         'emptyEmail': 'пустой емаил',
         'emptyTel': 'пустой емаил',
+        'emptyPassword': 'пустой пароль',
         'shortText': 'короткий текст',
         'shortEmail': 'короткий емаил',
+        'shortPassword': 'короткий пароль',
         'invalidEmail': 'невалидный емаил',
         'invalidText': 'невалидный текст',
+        'invalidPassword': 'невалидный пароль',
         'InvalidTel': 'невалидный номер телефона'
     };
 
@@ -49,10 +54,9 @@ function Validation() {
         'rowBlock': '.row-input',
         'errorText': '.form__error',
         'errorBlock': 'error__field',
-        'wereErrorClass' : '.row-input',
+        'wereErrorClass': '.row-input',
         'forms': '.contacts-page__form form'
     };
-
 
 
     /**
@@ -107,9 +111,9 @@ function Validation() {
             var form = $(this),
                 formValid = true;
             form.find('input,textarea').not('input[type=hidden]').each(function () {
-               if(self.validFormElements(this) === false){
-                   formValid = false;
-               }
+                if (self.validFormElements(this) === false) {
+                    formValid = false;
+                }
             });
             if (formValid === true) {
                 console.log('Validation is fine');
@@ -158,6 +162,8 @@ function Validation() {
                 self.validEmail(target);
             } else if (type === 'tel') {
                 self.validTel(target);
+            } else if (type === 'password') {
+                self.validPassword(target);
             }
             formValid = false;
             $(target).blur();
@@ -182,7 +188,7 @@ function Validation() {
         var triggeredErrors = setInterval(function () {
             var right = errorBox.css('right');
             if (trigger === false) {
-                errorBox.css('right', +right.substring(0, right.search('p')) + 2 +'px');
+                errorBox.css('right', +right.substring(0, right.search('p')) + 2 + 'px');
                 trigger = true;
             } else {
                 errorBox.css('right', +right.substring(0, right.search('p')) + (-2) + 'px');
@@ -206,6 +212,8 @@ function Validation() {
             self.addError(target, 'shortText');
         } else if (target.validity.patternMismatch) {
             self.addError(target, 'invalidText')
+        } else if (target.validity.typeMismatch) {
+            self.addError(target, 'invalidText')
         }
     };
 
@@ -219,6 +227,8 @@ function Validation() {
             self.addError(target, 'emptyEmail');
         } else if (target.validity.tooShort) {
             self.addError(target, 'shortEmail');
+        } else if (target.validity.typeMismatch) {
+            self.addError(target, 'invalidEmail')
         } else if (target.validity.patternMismatch) {
             self.addError(target, 'invalidEmail')
         }
@@ -232,8 +242,27 @@ function Validation() {
     this.validTel = function (target) {
         if (target.validity.valueMissing) {
             self.addError(target, 'emptyTel')
+        } else if (target.validity.typeMismatch) {
+            self.addError(target, 'invalidTel')
         } else if (target.validity.patternMismatch) {
             self.addError(target, 'invalidTel')
+        }
+    };
+
+    /**
+     * Проверяет валидность поля для пароля.
+     *
+     * @param {object} target - Поле которое проверяется на валидость.
+     */
+    this.validPassword = function (target) {
+        if (target.validity.valueMissing) {
+            self.addError(target, 'emptyPassword')
+        } else if (target.validity.tooShort) {
+            self.addError(target, 'shortPassword')
+        } else if (target.validity.typeMismatch) {
+            self.addError(target, 'invalidPassword')
+        } else if (target.validity.patternMismatch) {
+            self.addError(target, 'invalidPassword')
         }
     };
 
