@@ -9,5 +9,6 @@
             "name": "Roman Andrusenko",
             "email": "r.andrusenko@skarb.com.ua"
         }
-    ]
+    ],
+    "minimum-stability": "stable"
 }
