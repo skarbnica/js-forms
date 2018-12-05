@@ -1,8 +1,8 @@
 {
-    "name": "rom4nski/yii2-validation",
-    "description": "validation",
+    "name": "skarbnica/js-forms",
+    "description": "js-forms",
     "type": "library",
-    "keywords": ["yii2","validation"],
+    "keywords": ["yii2","js-forms"],
     "license": "MIT",
     "authors": [
         {
