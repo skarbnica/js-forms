@@ -1,0 +1,13 @@
+{
+    "name": "rom4nski/yii2-validation",
+    "description": "validation",
+    "type": "library",
+    "keywords": ["yii2","validation"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roman Andrusenko",
+            "email": "r.andrusenko@skarb.com.ua"
+        }
+    ]
+}
