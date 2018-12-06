@@ -1,0 +1,13 @@
+{
+    "name": "skarbnica/js-forms",
+    "description": "js-forms",
+    "type": "library",
+    "keywords": ["yii2","js-forms"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roman Andrusenko",
+            "email": "r.andrusenko@skarb.com.ua"
+        }
+    ]
+}
