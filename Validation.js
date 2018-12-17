@@ -108,6 +108,14 @@ function Validation() {
             self.removeError(this);
         });
 
+        /**
+         *
+         *  Убирает ошибки при изминении select, radio.
+         */
+        $(this.selectors.forms).find('input[type=radio],select').on('change', function () {
+            self.removeError(this);
+        });
+
 
         /**
          *
