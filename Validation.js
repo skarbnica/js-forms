@@ -38,7 +38,8 @@ function Validation() {
         'invalidEmail': 'невалидный емаил',
         'invalidText': 'невалидный текст',
         'invalidPassword': 'невалидный пароль',
-        'InvalidTel': 'невалидный номер телефона'
+        'InvalidTel': 'невалидный номер телефона',
+        'requiredList': 'выберите значение'
     };
 
     /**
@@ -55,7 +56,7 @@ function Validation() {
         'errorText': '.form__error',
         'errorBlock': 'error__field',
         'wereErrorClass': '.row-input',
-        'forms': '.contacts-page__form form'
+        'forms': 'form'
     };
 
 
@@ -66,10 +67,13 @@ function Validation() {
      * @param {string} errorMessage - Сообщение об ошибке.
      */
     this.addError = function (target, errorMessage) {
-        if (this.errors[errorMessage]) {
-            $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(this.errors[errorMessage]);
-        } else {
-            $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
+        if($(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text() === ''){
+            if (this.errors[errorMessage]) {
+                $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(this.errors[errorMessage]);
+            } else {
+                $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(errorMessage);
+            }
+
         }
         $(target).closest(this.selectors.wereErrorClass).addClass(this.selectors.errorBlock);
     };
@@ -90,15 +94,17 @@ function Validation() {
          *
          * Проверка формы на наличие аттрибута novalidate.
          */
-        if ($(this.selectors.forms).attr('novalidate') === undefined) {
-            $(this.selectors.forms).attr('novalidate', true);
-        }
+        $(this.selectors.forms).each(function () {
+            if($(this).attr('novalidate') === undefined) {
+                $(this).attr('novalidate', true)
+            }
+        });
 
         /**
          *
          *  Убирает ошибки в поле при фокусе на нем.
          */
-        $(this.selectors.forms).find('input,textarea').on('focus', function () {
+        $(this.selectors.forms).find('input,textarea,select').on('focus', function () {
             self.removeError(this);
         });
 
@@ -110,7 +116,7 @@ function Validation() {
         $(this.selectors.forms).on('submit', function (e) {
             var form = $(this),
                 formValid = true;
-            form.find('input,textarea').not('input[type=hidden]').each(function () {
+            form.find('input,textarea,select').not('input[type=hidden]').each(function () {
                 if (self.validFormElements(this) === false) {
                     formValid = false;
                 }
@@ -153,6 +159,8 @@ function Validation() {
         if (target.validity.valid === false) {
             if ($(target).is('textarea')) {
                 var type = 'text'
+            } else if ($(target).is('select')) {
+                var type = 'select'
             } else if ($(target).is('input')) {
                 var type = $(target).attr('type')
             }
@@ -164,6 +172,10 @@ function Validation() {
                 self.validTel(target);
             } else if (type === 'password') {
                 self.validPassword(target);
+            } else if (type === 'select') {
+                self.validList(target);
+            } else if (type === 'radio') {
+                self.validList(target);
             }
             formValid = false;
             $(target).blur();
@@ -264,6 +276,15 @@ function Validation() {
         } else if (target.validity.patternMismatch) {
             self.addError(target, 'invalidPassword')
         }
+    };
+
+    /**
+     * Проверяет валидность поля для селекта или радиобатона.
+     *
+     * @param {object} target - Поле которое проверяется на валидость.
+     */
+    this.validList = function (target) {
+        self.addError(target, 'requiredList')
     };
 
 }
