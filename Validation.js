@@ -99,7 +99,6 @@ function Validation() {
                 $(this).attr('novalidate', true);
             }
             $(this).data('blur', false);
-            console.log($(this).data('blur'));
         });
 
         /**
