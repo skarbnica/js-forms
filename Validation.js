@@ -96,8 +96,10 @@ function Validation() {
          */
         $(this.selectors.forms).each(function () {
             if($(this).attr('novalidate') === undefined) {
-                $(this).attr('novalidate', true)
+                $(this).attr('novalidate', true);
             }
+            $(this).data('blur', false);
+            console.log($(this).data('blur'));
         });
 
         /**
@@ -124,6 +126,7 @@ function Validation() {
         $(this.selectors.forms).on('submit', function (e) {
             var form = $(this),
                 formValid = true;
+            if(form.data('blur') === false) form.data('blur', true);
             form.find('input,textarea,select').not('input[type=hidden]').each(function () {
                 if (self.validFormElements(this) === false) {
                     formValid = false;
@@ -141,18 +144,20 @@ function Validation() {
          *  Проверка на валидность определенного поля при уходе из него фокуса.
          */
         $(this.selectors.forms).find('input, textarea').on('blur', function () {
-            if ($(this).is('textarea')) {
-                var type = 'text'
-            } else if ($(this).is('input')) {
-                var type = $(this).attr('type')
-            }
-            if (type !== 'submit') {
-                if (type === 'text') {
-                    self.validText(this);
-                } else if (type === 'email') {
-                    self.validEmail(this);
-                } else if (type === 'tel') {
-                    self.validTel(this);
+            if ($(this).closest('form').data('blur')) {
+                if ($(this).is('textarea')) {
+                    var type = 'text'
+                } else if ($(this).is('input')) {
+                    var type = $(this).attr('type')
+                }
+                if (type !== 'submit') {
+                    if (type === 'text') {
+                        self.validText(this);
+                    } else if (type === 'email') {
+                        self.validEmail(this);
+                    } else if (type === 'tel') {
+                        self.validTel(this);
+                    }
                 }
             }
         });
