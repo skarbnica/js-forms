@@ -126,7 +126,7 @@ function Validation() {
             var form = $(this),
                 formValid = true;
             if(form.data('blur') === false) form.data('blur', true);
-            form.find('input,textarea,select').not('input[type=hidden]').each(function () {
+            form.find('input,textarea,select').not('input[type=hidden],input[type=submit]').each(function () {
                 if (self.validFormElements(this) === false) {
                     formValid = false;
                 }
@@ -150,12 +150,15 @@ function Validation() {
                     var type = $(this).attr('type')
                 }
                 if (type !== 'submit') {
+
                     if (type === 'text') {
                         self.validText(this);
                     } else if (type === 'email') {
                         self.validEmail(this);
                     } else if (type === 'tel') {
                         self.validTel(this);
+                    } else if (type === 'password') {
+                        self.validPassword(this);
                     }
                 }
             }
@@ -190,7 +193,7 @@ function Validation() {
                 self.validList(target);
             }
             formValid = false;
-            $(target).blur();
+            // $(target).blur();
         }
         if ($(target).closest(self.selectors.wereErrorClass).hasClass(self.selectors.errorBlock)) {
             formValid = false;
