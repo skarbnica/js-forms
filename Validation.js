@@ -171,6 +171,7 @@ function Validation() {
      * @param target - Элемент формы, который будет проверяться на валидность.
      */
     this.validFormElements = function (target) {
+        formValid = true;
         if (target.validity.valid === false) {
             if ($(target).is('textarea')) {
                 var type = 'text'
@@ -198,9 +199,8 @@ function Validation() {
         if ($(target).closest(self.selectors.wereErrorClass).hasClass(self.selectors.errorBlock)) {
             formValid = false;
             self.triggError(target);
-            return formValid;
         }
-        return true;
+        return formValid;
     };
 
 
