@@ -68,6 +68,7 @@ function Validation() {
      */
     this.addError = function (target, errorMessage) {
         if($(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text() === ''){
+            $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
             if (this.errors[errorMessage]) {
                 $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(this.errors[errorMessage]);
             } else {
@@ -85,7 +86,6 @@ function Validation() {
      */
     this.removeError = function (target) {
         $(target).closest(this.selectors.wereErrorClass).removeClass(this.selectors.errorBlock);
-        $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
     };
 
     this.addEvents = function () {
@@ -210,7 +210,7 @@ function Validation() {
      * @param target - Поле с текстом ошибки, к которой будет применена анимация.
      */
     this.triggError = function (target) {
-        var errorBox = $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText),
+        var errorBox = $(target).hasClass(this.selectors.errorText) ? $(target) : $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText),
             trigger = false;
         var triggeredErrors = setInterval(function () {
             var right = errorBox.css('right');
