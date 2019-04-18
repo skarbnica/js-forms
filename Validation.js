@@ -19,23 +19,27 @@ function Validation() {
      * @property {string} emptyEmail - Пустое поле ввода email.
      * @property {string} emptyTel - Пустое поле ввода телефонного номера.
      * @property {string} emptyPassword - Пустое поле ввода пароля.
+     * @property {string} emptyDate - Пустое поле ввода даты.
      * @property {string} shortText - Короткое содержимое текстового поля.
      * @property {string} shortEmail - Короткое содержимое поля ввода email.
      * @property {string} shortPassword - Короткое содержимое поля ввода пароля.
      * @property {string} invalidEmail - Некорректное содержимое поля ввода email.
      * @property {string} invalidText - Некорректное содержимое текстового поля.
+     * @property {string} InvalidDate - Некорректное содержимое поля ввода даты.
      * @property {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
      * @property {string} InvalidPassword - Некорректное содержимое поля ввода пароля.
      */
     this.errors = {
         'emptyText': 'пустой текст',
         'emptyEmail': 'пустой емаил',
-        'emptyTel': 'пустой емаил',
+        'emptyTel': 'пустой номер телефона',
         'emptyPassword': 'пустой пароль',
+        'emptyDate': 'пустое поле даты',
         'shortText': 'короткий текст',
         'shortEmail': 'короткий емаил',
         'shortPassword': 'короткий пароль',
         'invalidEmail': 'невалидный емаил',
+        'InvalidDate': 'невалидная дата',
         'invalidText': 'невалидный текст',
         'invalidPassword': 'невалидный пароль',
         'InvalidTel': 'невалидный номер телефона',
@@ -67,7 +71,7 @@ function Validation() {
      * @param {string} errorMessage - Сообщение об ошибке.
      */
     this.addError = function (target, errorMessage) {
-        if($(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text() === ''){
+        if ($(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text() === '') {
             $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text('');
             if (this.errors[errorMessage]) {
                 $(target).closest(this.selectors.rowBlock).find(this.selectors.errorText).text(this.errors[errorMessage]);
@@ -95,7 +99,7 @@ function Validation() {
          * Проверка формы на наличие аттрибута novalidate.
          */
         $(this.selectors.forms).each(function () {
-            if($(this).attr('novalidate') === undefined) {
+            if ($(this).attr('novalidate') === undefined) {
                 $(this).attr('novalidate', true);
             }
             $(this).data('blur', false);
@@ -125,7 +129,7 @@ function Validation() {
         $(this.selectors.forms).on('submit', function (e) {
             var form = $(this),
                 formValid = true;
-            if(form.data('blur') === false) form.data('blur', true);
+            if (form.data('blur') === false) form.data('blur', true);
             form.find('input,textarea,select').not('input[type=hidden],input[type=submit]').each(function () {
                 if (self.validFormElements(this) === false) {
                     formValid = false;
@@ -133,9 +137,9 @@ function Validation() {
             });
             if (formValid === true) {
                 console.log('Validation is fine');
-                return true
+                return true;
             }
-            return false
+            return false;
         });
 
         /**
@@ -144,10 +148,11 @@ function Validation() {
          */
         $(this.selectors.forms).find('input, textarea').on('blur', function () {
             if ($(this).closest('form').data('blur')) {
+                var type;
                 if ($(this).is('textarea')) {
-                    var type = 'text'
+                    type = 'text';
                 } else if ($(this).is('input')) {
-                    var type = $(this).attr('type')
+                    type = $(this).attr('type');
                 }
                 if (type !== 'submit') {
 
@@ -159,6 +164,8 @@ function Validation() {
                         self.validTel(this);
                     } else if (type === 'password') {
                         self.validPassword(this);
+                    } else if (type === 'date'){
+                        self.validDate(this);
                     }
                 }
             }
@@ -173,13 +180,16 @@ function Validation() {
     this.validFormElements = function (target) {
         formValid = true;
         if (target.validity.valid === false) {
+            var type;
+
             if ($(target).is('textarea')) {
-                var type = 'text'
+                type = 'text';
             } else if ($(target).is('select')) {
-                var type = 'select'
+                type = 'select';
             } else if ($(target).is('input')) {
-                var type = $(target).attr('type')
+                type = $(target).attr('type');
             }
+
             if (type === 'text') {
                 self.validText(target);
             } else if (type === 'email') {
@@ -192,7 +202,10 @@ function Validation() {
                 self.validList(target);
             } else if (type === 'radio') {
                 self.validList(target);
+            } else if (type === 'date') {
+                self.validDate(target);
             }
+
             formValid = false;
             // $(target).blur();
         }
@@ -238,9 +251,9 @@ function Validation() {
         } else if (target.validity.tooShort) {
             self.addError(target, 'shortText');
         } else if (target.validity.patternMismatch) {
-            self.addError(target, 'invalidText')
+            self.addError(target, 'invalidText');
         } else if (target.validity.typeMismatch) {
-            self.addError(target, 'invalidText')
+            self.addError(target, 'invalidText');
         }
     };
 
@@ -255,9 +268,9 @@ function Validation() {
         } else if (target.validity.tooShort) {
             self.addError(target, 'shortEmail');
         } else if (target.validity.typeMismatch) {
-            self.addError(target, 'invalidEmail')
+            self.addError(target, 'invalidEmail');
         } else if (target.validity.patternMismatch) {
-            self.addError(target, 'invalidEmail')
+            self.addError(target, 'invalidEmail');
         }
     };
 
@@ -268,11 +281,11 @@ function Validation() {
      */
     this.validTel = function (target) {
         if (target.validity.valueMissing) {
-            self.addError(target, 'emptyTel')
+            self.addError(target, 'emptyTel');
         } else if (target.validity.typeMismatch) {
-            self.addError(target, 'invalidTel')
+            self.addError(target, 'invalidTel');
         } else if (target.validity.patternMismatch) {
-            self.addError(target, 'invalidTel')
+            self.addError(target, 'invalidTel');
         }
     };
 
@@ -283,13 +296,13 @@ function Validation() {
      */
     this.validPassword = function (target) {
         if (target.validity.valueMissing) {
-            self.addError(target, 'emptyPassword')
+            self.addError(target, 'emptyPassword');
         } else if (target.validity.tooShort) {
-            self.addError(target, 'shortPassword')
+            self.addError(target, 'shortPassword');
         } else if (target.validity.typeMismatch) {
-            self.addError(target, 'invalidPassword')
+            self.addError(target, 'invalidPassword');
         } else if (target.validity.patternMismatch) {
-            self.addError(target, 'invalidPassword')
+            self.addError(target, 'invalidPassword');
         }
     };
 
@@ -299,7 +312,20 @@ function Validation() {
      * @param {object} target - Поле которое проверяется на валидость.
      */
     this.validList = function (target) {
-        self.addError(target, 'requiredList')
+        self.addError(target, 'requiredList');
+    };
+
+    /**
+     * Проверяет валидность поля для даты.
+     *
+     * @param {object} target - Поле которое проверяется на валидость.
+     */
+    this.validDate = function (target) {
+        if (target.validity.badInput) {
+            self.addError(target, 'invalidDate');
+        } else if (target.validity.valueMissing) {
+            self.addError(target, 'emptyDate');
+        }
     };
 
 }
