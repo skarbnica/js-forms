@@ -178,7 +178,7 @@ function Validation() {
      * @param target - Элемент формы, который будет проверяться на валидность.
      */
     this.validFormElements = function (target) {
-        formValid = true;
+        var formValid = true;
         if (target.validity.valid === false) {
             var type;
 
