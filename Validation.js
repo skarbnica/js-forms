@@ -115,6 +115,14 @@ function Validation() {
 
         /**
          *
+         *  Убирает ошибки в поле при вводе, если после submit у нас остался фокус в поле.
+         */
+        $(this.selectors.forms).find('input,textarea').on('input', function () {
+            self.removeError(this);
+        });
+
+        /**
+         *
          *  Убирает ошибки при изминении select, radio.
          */
         $(this.selectors.forms).find('input[type=radio],select').on('change', function () {
