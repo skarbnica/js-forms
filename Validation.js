@@ -102,7 +102,7 @@ function Validation() {
             if ($(this).attr('novalidate') === undefined) {
                 $(this).attr('novalidate', true);
             }
-            $(this).data('blur', false);
+            $(this).attr('data-blur', false);
         });
 
         /**
@@ -137,7 +137,7 @@ function Validation() {
         $(this.selectors.forms).on('submit', function (e) {
             var form = $(this),
                 formValid = true;
-            if (form.data('blur') === false) form.data('blur', true);
+            if (form.attr('data-blur') === false) form.attr('data-blur', true);
             form.find('input,textarea,select').not('input[type=hidden],input[type=submit]').each(function () {
                 if (self.validFormElements(this) === false) {
                     formValid = false;
@@ -155,15 +155,15 @@ function Validation() {
          *  Проверка на валидность определенного поля при уходе из него фокуса.
          */
         $(this.selectors.forms).find('input, textarea').on('blur', function () {
-            if ($(this).closest('form').data('blur')) {
+            if ($(this).closest('form').attr('data-blur')) {
                 var type;
                 if ($(this).is('textarea')) {
                     type = 'text';
                 } else if ($(this).is('input')) {
                     type = $(this).attr('type');
                 }
-                if (type !== 'submit') {
 
+                if (type !== 'submit' && $(this).val() !== '') {
                     if (type === 'text') {
                         self.validText(this);
                     } else if (type === 'email') {
@@ -175,6 +175,8 @@ function Validation() {
                     } else if (type === 'date'){
                         self.validDate(this);
                     }
+                } else {
+                    self.removeError(this);
                 }
             }
         });
