@@ -25,9 +25,9 @@ function Validation() {
      * @property {string} shortPassword - Короткое содержимое поля ввода пароля.
      * @property {string} invalidEmail - Некорректное содержимое поля ввода email.
      * @property {string} invalidText - Некорректное содержимое текстового поля.
-     * @property {string} InvalidDate - Некорректное содержимое поля ввода даты.
-     * @property {string} InvalidTel - Некорректное содержимое поля ввода телефонного номера.
-     * @property {string} InvalidPassword - Некорректное содержимое поля ввода пароля.
+     * @property {string} invalidDate - Некорректное содержимое поля ввода даты.
+     * @property {string} invalidTel - Некорректное содержимое поля ввода телефонного номера.
+     * @property {string} invalidPassword - Некорректное содержимое поля ввода пароля.
      */
     this.errors = {
         'emptyText': 'пустой текст',
@@ -39,10 +39,10 @@ function Validation() {
         'shortEmail': 'короткий емаил',
         'shortPassword': 'короткий пароль',
         'invalidEmail': 'невалидный емаил',
-        'InvalidDate': 'невалидная дата',
+        'invalidDate': 'невалидная дата',
         'invalidText': 'невалидный текст',
         'invalidPassword': 'невалидный пароль',
-        'InvalidTel': 'невалидный номер телефона',
+        'invalidTel': 'невалидный номер телефона',
         'requiredList': 'выберите значение'
     };
 
